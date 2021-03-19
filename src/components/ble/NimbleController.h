@@ -58,6 +58,7 @@ namespace Pinetime {
                                                 const ble_gatt_dsc* descriptor);
 
       void StartDiscovery();
+      void StartScan();
 
       Pinetime::Controllers::MusicService& music() {
         return musicService;

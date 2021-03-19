@@ -17,6 +17,8 @@
 
 using namespace Pinetime::Controllers;
 
+#define RECEIVER_ID 123
+
 NimbleController::NimbleController(Pinetime::System::SystemTask& systemTask,
                                    Pinetime::Controllers::Ble& bleController,
                                    DateTime& dateTimeController,
@@ -45,6 +47,73 @@ NimbleController::NimbleController(Pinetime::System::SystemTask& systemTask,
 int GAPEventCallback(struct ble_gap_event* event, void* arg) {
   auto nimbleController = static_cast<NimbleController*>(arg);
   return nimbleController->OnGAPEvent(event);
+}
+
+static uint32_t latestNotifId = 0;
+
+void handleNotification(NotificationManager *notificationManager, Pinetime::System::SystemTask *systemTask, uint32_t notifId, uint16_t room) {
+  if (latestNotifId >= notifId) {
+    return;
+  }
+  latestNotifId = notifId;
+  std::string msg = "Meldungg in Raum " + std::to_string(room);
+
+  NotificationManager::Notification notif;
+
+  strcpy(notif.message.data(), msg.c_str());
+
+  notif.category = Pinetime::Controllers::NotificationManager::Categories::HighProriotyAlert;
+  notificationManager->Push(std::move(notif));
+
+  systemTask->PushMessage(Pinetime::System::SystemTask::Messages::OnNewNotification);
+}
+
+void handleAcknowledgementAck() {
+  // not supported yet
+}
+
+void handleDelete() {
+  // not supported yet
+}
+
+int HandleDiscoveryEvent(struct ble_gap_event *event, NotificationManager *notificationManager, Pinetime::System::SystemTask *systemTask) {
+  uint8_t len = event->disc.length_data;
+  const uint8_t *data = event->disc.data;
+  int pos = 0;
+  uint8_t size;
+  uint8_t type;
+  bool found = false;
+  
+  if (len < 16) {
+    return 0;
+  }
+  if (data[5] != 0x59 || data[6] != 0x00) {
+    return 0; // seems unrelated
+  }
+
+  uint32_t notifId = (data[7] << 24) | (data[8] << 16) | (data[9] << 8) | data[10];
+  uint8_t notifType = data[11];
+  uint16_t receiver = (data[12] << 8) | data[13];
+  uint16_t room  = (data[14] << 8) | data[15];
+
+  if (receiver != RECEIVER_ID) {
+    return 0;
+  }
+
+  switch (notifType) {
+    case 0x00:
+      handleNotification(notificationManager, systemTask, notifId, room);
+      break;
+    case 0x03:
+      handleAcknowledgementAck();
+      break;
+    case 0x04:
+      handleDelete();
+      break;
+    default:
+      break;
+  }
+  return 0;
 }
 
 void NimbleController::Init() {
@@ -79,6 +148,22 @@ void NimbleController::Init() {
 
   res = ble_gatts_start();
   ASSERT(res == 0);
+
+  StartScan();
+}
+
+void NimbleController::StartScan() {
+  /* set scan parameters */
+  struct ble_gap_disc_params scan_params;
+  scan_params.itvl = 500;
+  scan_params.window = 250;
+  scan_params.filter_policy = 0;
+  scan_params.limited = 0;
+  scan_params.passive = 1;
+  scan_params.filter_duplicates = 1;
+  /* performs discovery procedure; value of own_addr_type is hard-coded,
+     because NRPA is used */
+  ble_gap_disc(BLE_OWN_ADDR_RANDOM, 1000, &scan_params, GAPEventCallback, this);
 }
 
 void NimbleController::StartAdvertising() {
@@ -221,6 +306,16 @@ int NimbleController::OnGAPEvent(ble_gap_event* event) {
     }
       /* Attribute data is contained in event->notify_rx.attr_data. */
 
+    case BLE_GAP_EVENT_DISC: {
+      NRF_LOG_INFO("advertisement discovered");
+      
+      return HandleDiscoveryEvent(event, &notificationManager, &systemTask);
+    }
+    case BLE_GAP_EVENT_DISC_COMPLETE: {
+      NRF_LOG_INFO("ble discovery complete, start again");
+      StartScan();
+      return 0;
+    }
     default:
       //      NRF_LOG_INFO("Advertising event : %d", event->type);
       break;
