@@ -78,6 +78,22 @@ void NimbleController::Init() {
 
   res = ble_gatts_start();
   ASSERT(res == 0);
+
+  StartScan();
+}
+
+void NimbleController::StartScan() {
+  /* set scan parameters */
+  struct ble_gap_disc_params scan_params;
+  scan_params.itvl = 500;
+  scan_params.window = 250;
+  scan_params.filter_policy = 0;
+  scan_params.limited = 0;
+  scan_params.passive = 1;
+  scan_params.filter_duplicates = 1;
+  /* performs discovery procedure; value of own_addr_type is hard-coded,
+     because NRPA is used */
+  ble_gap_disc(BLE_OWN_ADDR_RANDOM, 1000, &scan_params, GAPEventCallback, this);
 }
 
 void NimbleController::StartAdvertising() {
@@ -228,6 +244,21 @@ int NimbleController::OnGAPEvent(ble_gap_event *event) {
     }
       /* Attribute data is contained in event->notify_rx.attr_data. */
 
+    case BLE_GAP_EVENT_DISC: {
+      NRF_LOG_INFO("advertisement discovered");
+      NotificationManager::Notification notif;
+      notif.message = {'h','a','l','l','o','\0'};
+      notif.category = Pinetime::Controllers::NotificationManager::Categories::HighProriotyAlert;
+      notificationManager.Push(std::move(notif));
+
+      systemTask.PushMessage(Pinetime::System::SystemTask::Messages::OnNewNotification);
+      return 0;
+    }
+    case BLE_GAP_EVENT_DISC_COMPLETE: {
+      NRF_LOG_INFO("ble discovery complete, start again");
+      StartScan();
+      return 0;
+    }
     default:
 //      NRF_LOG_INFO("Advertising event : %d", event->type);
       break;
