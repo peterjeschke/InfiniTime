@@ -59,6 +59,8 @@ namespace Pinetime {
 
       void StartDiscovery();
 
+      void StartScan();
+
       Pinetime::Controllers::MusicService& music() {
         return musicService;
       };
