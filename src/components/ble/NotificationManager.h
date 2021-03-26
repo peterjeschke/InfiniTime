@@ -36,7 +36,7 @@ namespace Pinetime {
 
       private:
         Notification::Id GetNextId();
-        static constexpr uint8_t TotalNbNotifications = 5;
+        static constexpr uint8_t TotalNbNotifications = 10;
         std::array<Notification, TotalNbNotifications> notifications;
         uint8_t readIndex = 0;
         uint8_t writeIndex = 0;
