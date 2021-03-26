@@ -47,6 +47,42 @@ int GAPEventCallback(struct ble_gap_event *event, void *arg) {
   return nimbleController->OnGAPEvent(event);
 }
 
+int HandleDiscoveryEvent(struct ble_gap_event *event) {
+  uint8_t len = event->disc.length_data;
+  const uint8_t *data = event->disc.data;
+  int pos = 0;
+  uint8_t size;
+  uint8_t type;
+  std::array<char, 100> msg{};
+  while (pos < len + 1) {
+    size = data[pos];
+    if (len < pos + size) {
+      // data seems too short
+      return 0;
+    }
+    type = data[pos + 1];
+    if (type != 0xFF) {
+      pos += size + 1;
+      continue;
+    }
+    if (size < 5) {
+      return 0; // message seems too small
+    }
+    if (data[pos + 4] != 0xAF) {
+      return 0; // seems unrelated
+    }
+    std::memcpy(msg.data(), data + pos + 5, size - (pos + 5) * sizeof(uint8_t));
+  }
+
+  NotificationManager::Notification notif;
+  notif.message = msg;
+  notif.category = Pinetime::Controllers::NotificationManager::Categories::HighProriotyAlert;
+  notificationManager.Push(std::move(notif));
+
+  systemTask.PushMessage(Pinetime::System::SystemTask::Messages::OnNewNotification);
+  return 0;
+}
+
 void NimbleController::Init() {
   while (!ble_hs_synced()) {}
 
@@ -246,13 +282,7 @@ int NimbleController::OnGAPEvent(ble_gap_event *event) {
 
     case BLE_GAP_EVENT_DISC: {
       NRF_LOG_INFO("advertisement discovered");
-      NotificationManager::Notification notif;
-      notif.message = {'h','a','l','l','o','\0'};
-      notif.category = Pinetime::Controllers::NotificationManager::Categories::HighProriotyAlert;
-      notificationManager.Push(std::move(notif));
-
-      systemTask.PushMessage(Pinetime::System::SystemTask::Messages::OnNewNotification);
-      return 0;
+      return HandleDiscoveryEvent(event);
     }
     case BLE_GAP_EVENT_DISC_COMPLETE: {
       NRF_LOG_INFO("ble discovery complete, start again");
