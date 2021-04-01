@@ -54,7 +54,7 @@ int HandleDiscoveryEvent(struct ble_gap_event *event, NotificationManager *notif
   uint8_t size;
   uint8_t type;
   std::array<char, 101> msg{};
-  while (pos < len + 1) {
+  /*while (pos < len + 1) {
     size = data[pos];
     if (len < pos + size) {
       // data seems too short
@@ -70,9 +70,9 @@ int HandleDiscoveryEvent(struct ble_gap_event *event, NotificationManager *notif
     }
     if (data[pos + 4] != 0xAF) {
       return 0; // seems unrelated
-    }
-    memcpy(msg.data(), data + pos + 5, size - (pos + 5) * sizeof(uint8_t));
-  }
+    }*/
+    memcpy(msg.data(), data, size * sizeof(uint8_t));
+  //}
 
   NotificationManager::Notification notif;
   notif.message = msg;
