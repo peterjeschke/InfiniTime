@@ -75,7 +75,7 @@ int HandleDiscoveryEvent(struct ble_gap_event *event, NotificationManager *notif
   //}
 
   NotificationManager::Notification notif;
-  notif.message = msg;
+  notif.message = {"h", "e", "l", "o"};
   notif.category = Pinetime::Controllers::NotificationManager::Categories::HighProriotyAlert;
   notificationManager->Push(std::move(notif));
 
