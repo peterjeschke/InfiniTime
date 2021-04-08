@@ -78,11 +78,20 @@ int HandleDiscoveryEvent(struct ble_gap_event *event, NotificationManager *notif
     found = true;
     //memcpy(msg.data(), data, size * sizeof(uint8_t));
   }
-
   if (!found) return 0;
-  if (pos + 7 > len) return 0;
+  int i;
+  for (i = 0; i <= 50; i++) {
+    if (pos + 2 + i > len) {
+      break;
+    }
+    if (data[pos + 2 + i] < 0x20 || data[pos + 2 + i] > 0x7E) {
+      continue;
+    }
+    msg[i] = data[pos + 2 + i];
+  }
+  msg[i+1] = '\0';
   NotificationManager::Notification notif;
-  notif.message = {(char) data[4], (char) data[5], (char) data[6], (char) data[7],'\0'};
+  notif.message = msg;
   notif.category = Pinetime::Controllers::NotificationManager::Categories::HighProriotyAlert;
   notificationManager->Push(std::move(notif));
 
