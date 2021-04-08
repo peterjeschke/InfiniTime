@@ -57,7 +57,7 @@ int HandleDiscoveryEvent(struct ble_gap_event *event, NotificationManager *notif
   if (len < 7) {
     return 0;
   }
-  if (data[5] != 0x59 && data[6] != 0x00) {
+  if (data[5] != 0x59 || data[6] != 0x00) {
     return 0;
   }
   /*while (pos <= len) {
