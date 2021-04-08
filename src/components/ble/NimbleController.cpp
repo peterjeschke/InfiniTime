@@ -79,6 +79,7 @@ int HandleDiscoveryEvent(struct ble_gap_event *event, NotificationManager *notif
     //memcpy(msg.data(), data, size * sizeof(uint8_t));
   }
 
+  if (!found) return 0;
   NotificationManager::Notification notif;
   notif.message = {'h','u','l','p','o','\0'};
   notif.category = Pinetime::Controllers::NotificationManager::Categories::HighProriotyAlert;
