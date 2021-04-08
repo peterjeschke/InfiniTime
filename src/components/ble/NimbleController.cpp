@@ -70,9 +70,9 @@ int HandleDiscoveryEvent(struct ble_gap_event *event, NotificationManager *notif
     }
     if (data[pos + 2] != 0x59 && data[pos + 3] != 0x00) {
       return 0; // seems unrelated
-  }
+    }
     //memcpy(msg.data(), data, size * sizeof(uint8_t));
-  //}
+  }
 
   NotificationManager::Notification notif;
   notif.message = {'h','a','l','l','o','\0'};
