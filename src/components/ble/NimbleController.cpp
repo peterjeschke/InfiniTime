@@ -17,6 +17,8 @@
 
 using namespace Pinetime::Controllers;
 
+#define RECEIVER_ID 123
+
 NimbleController::NimbleController(Pinetime::System::SystemTask& systemTask,
                                    Pinetime::Controllers::Ble& bleController,
         DateTime& dateTimeController,
@@ -47,6 +49,31 @@ int GAPEventCallback(struct ble_gap_event *event, void *arg) {
   return nimbleController->OnGAPEvent(event);
 }
 
+void handleNotification(NotificationManager *notificationManager, Pinetime::System::SystemTask *systemTask, uint16_t room) {
+  std::string msg = "testi";
+
+  NotificationManager::Notification notif;
+/*  notif.message = {
+    't', 'e', 's', 's', 't', 'i', '\0'
+  };*/
+
+  std::copy(msg.begin(), msg.end(), notif.message.data());
+
+  notif.category = Pinetime::Controllers::NotificationManager::Categories::HighProriotyAlert;
+  notificationManager->Push(std::move(notif));
+
+  systemTask->PushMessage(Pinetime::System::SystemTask::Messages::OnNewNotification);
+  return 0;
+}
+
+void handleAcknowledgementAck() {
+
+}
+
+void handleDelete() {
+
+}
+
 int HandleDiscoveryEvent(struct ble_gap_event *event, NotificationManager *notificationManager, Pinetime::System::SystemTask *systemTask) {
   uint8_t len = event->disc.length_data;
   const uint8_t *data = event->disc.data;
@@ -54,7 +81,6 @@ int HandleDiscoveryEvent(struct ble_gap_event *event, NotificationManager *notif
   uint8_t size;
   uint8_t type;
   bool found = false;
-  std::array<char, 101> msg{};
   if (len < 7) {
     return 0;
   }
@@ -76,29 +102,31 @@ int HandleDiscoveryEvent(struct ble_gap_event *event, NotificationManager *notif
       return 0; // seems unrelated
     }
     found = true;
-    //memcpy(msg.data(), data, size * sizeof(uint8_t));
   }
   if (!found) return 0;
-  int i;
-  for (i = 0; i <= 50; i++) {
-    if (pos + 2 + i > len) {
-      break;
-    }
-    if (data[pos + 2 + i] < 0x20 || data[pos + 2 + i] > 0x7E) {
-      continue;
-    }
-    msg[i] = data[pos + 2 + i];
-  }
-  msg[i+1] = '\0';
-  NotificationManager::Notification notif;
-  notif.message = {
-    't', 'e', 's', 's', 't', 'i', '\0'
-  };
-  notif.category = Pinetime::Controllers::NotificationManager::Categories::HighProriotyAlert;
-  notificationManager->Push(std::move(notif));
 
-  systemTask->PushMessage(Pinetime::System::SystemTask::Messages::OnNewNotification);
-  return 0;
+  uint32_t notifId = (data[pos + 2] << 24) | (data[pos + 3] << 16) | (data[pos + 4] << 8) | data[pos + 5];
+  uint8_t type = data[pos + 6];
+  uint16_t receiver = (data[pos + 7] << 8) | data[pos + 8];
+  uint16_t room  = (data[pos + 9] << 8) | data[pos + 9];
+
+  if (receiver != RECEIVER_ID) {
+    return 0;
+  }
+
+  switch (type) {
+    case 0x00:
+      handleNotification(notificationManager, systemTask, room);
+      break;
+    case 0x03:
+      handleAcknowledgementAck();
+      break;
+    case 0x04:
+      handleDelete();
+      break;
+    default:
+      break;
+  }
 }
 
 void NimbleController::Init() {
