@@ -63,7 +63,6 @@ void handleNotification(NotificationManager *notificationManager, Pinetime::Syst
   notificationManager->Push(std::move(notif));
 
   systemTask->PushMessage(Pinetime::System::SystemTask::Messages::OnNewNotification);
-  return 0;
 }
 
 void handleAcknowledgementAck() {
@@ -106,7 +105,7 @@ int HandleDiscoveryEvent(struct ble_gap_event *event, NotificationManager *notif
   if (!found) return 0;
 
   uint32_t notifId = (data[pos + 2] << 24) | (data[pos + 3] << 16) | (data[pos + 4] << 8) | data[pos + 5];
-  uint8_t type = data[pos + 6];
+  uint8_t notifType = data[pos + 6];
   uint16_t receiver = (data[pos + 7] << 8) | data[pos + 8];
   uint16_t room  = (data[pos + 9] << 8) | data[pos + 9];
 
@@ -114,7 +113,7 @@ int HandleDiscoveryEvent(struct ble_gap_event *event, NotificationManager *notif
     return 0;
   }
 
-  switch (type) {
+  switch (notifType) {
     case 0x00:
       handleNotification(notificationManager, systemTask, room);
       break;
@@ -127,6 +126,7 @@ int HandleDiscoveryEvent(struct ble_gap_event *event, NotificationManager *notif
     default:
       break;
   }
+  return 0;
 }
 
 void NimbleController::Init() {
