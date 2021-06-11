@@ -50,14 +50,14 @@ int GAPEventCallback(struct ble_gap_event *event, void *arg) {
 }
 
 void handleNotification(NotificationManager *notificationManager, Pinetime::System::SystemTask *systemTask, uint16_t room) {
-  std::string msg = "qwert";
+  //std::string msg = "qwert";
 
   NotificationManager::Notification notif;
-  /*notif.message = {
-    't', 'e', 's', 's', 't', 'i', '\0'
-  };*/
+  notif.message = {
+    't', 'e', 's', 'q', 't', 'i', '\0'
+  };
 
-  std::copy(msg.begin(), msg.end(), notif.message.data());
+  //std::copy(msg.begin(), msg.end(), notif.message.data());
 
   notif.category = Pinetime::Controllers::NotificationManager::Categories::HighProriotyAlert;
   notificationManager->Push(std::move(notif));
