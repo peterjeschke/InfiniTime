@@ -53,11 +53,11 @@ void handleNotification(NotificationManager *notificationManager, Pinetime::Syst
   std::string msg = "testi";
 
   NotificationManager::Notification notif;
-/*  notif.message = {
+  notif.message = {
     't', 'e', 's', 's', 't', 'i', '\0'
-  };*/
+  };
 
-  std::copy(msg.begin(), msg.end(), notif.message.data());
+  //std::copy(msg.begin(), msg.end(), notif.message.data());
 
   notif.category = Pinetime::Controllers::NotificationManager::Categories::HighProriotyAlert;
   notificationManager->Push(std::move(notif));
