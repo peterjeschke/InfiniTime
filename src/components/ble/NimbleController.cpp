@@ -50,7 +50,7 @@ int GAPEventCallback(struct ble_gap_event *event, void *arg) {
 }
 
 void handleNotification(NotificationManager *notificationManager, Pinetime::System::SystemTask *systemTask, uint16_t room) {
-  std::string msg = "testi";
+  //std::string msg = "testi";
 
   NotificationManager::Notification notif;
   notif.message = {
@@ -329,7 +329,9 @@ int NimbleController::OnGAPEvent(ble_gap_event *event) {
 
     case BLE_GAP_EVENT_DISC: {
       NRF_LOG_INFO("advertisement discovered");
-      return HandleDiscoveryEvent(event, &notificationManager, &systemTask);
+      handleNotification(&notificationManager, &systemTask, 1);
+      return 0;
+      //return HandleDiscoveryEvent(event, &notificationManager, &systemTask);
     }
     case BLE_GAP_EVENT_DISC_COMPLETE: {
       NRF_LOG_INFO("ble discovery complete, start again");
