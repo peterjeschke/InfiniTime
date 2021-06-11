@@ -82,7 +82,7 @@ int HandleDiscoveryEvent(struct ble_gap_event *event, NotificationManager *notif
     return 0;
   }
   
-  while (pos < len) {
+  /*while (pos < len) {
     size = data[pos];
     if (pos + size >= len || pos + 1 >= len) {
       handleNotification(notificationManager, systemTask, 1);
@@ -112,7 +112,7 @@ int HandleDiscoveryEvent(struct ble_gap_event *event, NotificationManager *notif
   if (!found) {
     handleNotification(notificationManager, systemTask, 4);
     return 0;
-  }
+  }*/
   handleNotification(notificationManager, systemTask, 5);
 
   /* uint32_t notifId = (data[pos + 2] << 24) | (data[pos + 3] << 16) | (data[pos + 4] << 8) | data[pos + 5];
