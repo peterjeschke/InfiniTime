@@ -84,9 +84,14 @@ int HandleDiscoveryEvent(struct ble_gap_event *event, NotificationManager *notif
   
   while (pos < len) {
     size = data[pos];
-    if (len < pos + size) {
+    if (pos + size >= len || pos + 1 >= len) {
       handleNotification(notificationManager, systemTask, 1);
       // data seems too short
+      return 0;
+    }
+    if (size <= 0) {
+      // ????
+      handleNotification(notificationManager, systemTask, 0);
       return 0;
     }
     type = data[pos + 1];
