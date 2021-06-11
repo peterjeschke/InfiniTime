@@ -57,7 +57,7 @@ void handleNotification(NotificationManager *notificationManager, Pinetime::Syst
     't', 'e', 's', 'q', 't', 'j', '\0'
   };*/
 
-  strcopy(notif.message, msg.c_str());
+  strcpy(notif.message, msg.c_str());
   //std::copy(msg.begin(), msg.end(), notif.message.data());
 
   notif.category = Pinetime::Controllers::NotificationManager::Categories::HighProriotyAlert;
