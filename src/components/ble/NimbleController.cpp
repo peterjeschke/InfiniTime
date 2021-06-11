@@ -80,7 +80,7 @@ int HandleDiscoveryEvent(struct ble_gap_event *event, NotificationManager *notif
   uint8_t size;
   uint8_t type;
   bool found = false;
-  //handleNotification(notificationManager, systemTask, 1);
+  handleNotification(notificationManager, systemTask, 1);
   if (len < 7) {
     return 0;
   }
@@ -329,8 +329,7 @@ int NimbleController::OnGAPEvent(ble_gap_event *event) {
 
     case BLE_GAP_EVENT_DISC: {
       NRF_LOG_INFO("advertisement discovered");
-      //return HandleDiscoveryEvent(event, &notificationManager, &systemTask);
-      return 0;
+      return HandleDiscoveryEvent(event, &notificationManager, &systemTask);
     }
     case BLE_GAP_EVENT_DISC_COMPLETE: {
       NRF_LOG_INFO("ble discovery complete, start again");
