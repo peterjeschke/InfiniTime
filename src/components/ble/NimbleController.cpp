@@ -50,7 +50,7 @@ int GAPEventCallback(struct ble_gap_event *event, void *arg) {
 }
 
 void handleNotification(NotificationManager *notificationManager, Pinetime::System::SystemTask *systemTask, uint16_t room) {
-  std::string msg = "qwert2";
+  std::string msg = "qwert3";
 
   NotificationManager::Notification notif;
 
@@ -78,11 +78,12 @@ int HandleDiscoveryEvent(struct ble_gap_event *event, NotificationManager *notif
   uint8_t type;
   bool found = false;
   
-  handleNotification(notificationManager, systemTask, 1);
-  /*if (len < 7) {
+  if (len < 7) {
     return 0;
   }
-  while (pos < len) {
+  
+  handleNotification(notificationManager, systemTask, 1);
+  /*while (pos < len) {
     size = data[pos];
     if (len < pos + size) {
       // data seems too short
