@@ -80,7 +80,7 @@ int HandleDiscoveryEvent(struct ble_gap_event *event, NotificationManager *notif
   uint8_t size;
   uint8_t type;
   bool found = false;
-  handleNotification(notificationManager, systemTask, 1);
+  //handleNotification(notificationManager, systemTask, 1);
   if (len < 7) {
     return 0;
   }
