@@ -53,9 +53,7 @@ void handleNotification(NotificationManager *notificationManager, Pinetime::Syst
   std::string msg = "qwert";
 
   NotificationManager::Notification notif;
-  notif.message = {
-    't', 'e', 's', 'q', 't', 'j', '\0'
-  };
+  notif.message = "asdf";
 
   std::copy(msg.begin(), msg.end(), notif.message.data());
 
