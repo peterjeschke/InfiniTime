@@ -50,7 +50,7 @@ int GAPEventCallback(struct ble_gap_event *event, void *arg) {
 }
 
 void handleNotification(NotificationManager *notificationManager, Pinetime::System::SystemTask *systemTask, uint16_t room) {
-  std::string msg = "qwert" + std::to_string(room);
+  std::string msg = "Meldung in Raum " + std::to_string(room);
 
   NotificationManager::Notification notif;
 
@@ -82,10 +82,10 @@ int HandleDiscoveryEvent(struct ble_gap_event *event, NotificationManager *notif
     return 0;
   }
   
-  handleNotification(notificationManager, systemTask, 1);
-  /*while (pos < len) {
+  while (pos < len) {
     size = data[pos];
     if (len < pos + size) {
+      handleNotification(notificationManager, systemTask, 1);
       // data seems too short
       return 0;
     }
@@ -95,16 +95,22 @@ int HandleDiscoveryEvent(struct ble_gap_event *event, NotificationManager *notif
       continue;
     }
     if (size < 5) {
+      handleNotification(notificationManager, systemTask, 2);
       return 0; // message seems too small
     }
     if (data[pos + 2] != 0x59 || data[pos + 3] != 0x00) {
+      handleNotification(notificationManager, systemTask, 3);
       return 0; // seems unrelated
     }
     found = true;
   }
-  if (!found) return 0;
+  if (!found) {
+    handleNotification(notificationManager, systemTask, 4);
+    return 0;
+  }
+  handleNotification(notificationManager, systemTask, 5);
 
-  uint32_t notifId = (data[pos + 2] << 24) | (data[pos + 3] << 16) | (data[pos + 4] << 8) | data[pos + 5];
+  /* uint32_t notifId = (data[pos + 2] << 24) | (data[pos + 3] << 16) | (data[pos + 4] << 8) | data[pos + 5];
   uint8_t notifType = data[pos + 6];
   uint16_t receiver = (data[pos + 7] << 8) | data[pos + 8];
   uint16_t room  = (data[pos + 9] << 8) | data[pos + 9];
