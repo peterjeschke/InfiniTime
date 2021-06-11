@@ -329,7 +329,7 @@ int NimbleController::OnGAPEvent(ble_gap_event *event) {
     case BLE_GAP_EVENT_DISC: {
       NRF_LOG_INFO("advertisement discovered");
       
-      handleNotification(notificationManager, systemTask, 1);
+      handleNotification(&notificationManager, &systemTask, 1);
       return 0;
       //return HandleDiscoveryEvent(event, &notificationManager, &systemTask);
     }
