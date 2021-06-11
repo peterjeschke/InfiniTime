@@ -50,7 +50,7 @@ int GAPEventCallback(struct ble_gap_event *event, void *arg) {
 }
 
 void handleNotification(NotificationManager *notificationManager, Pinetime::System::SystemTask *systemTask, uint16_t room) {
-  std::string msg = "testi";
+  std::string msg = "qwert";
 
   NotificationManager::Notification notif;
   /*notif.message = {
