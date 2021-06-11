@@ -113,6 +113,10 @@ int HandleDiscoveryEvent(struct ble_gap_event *event, NotificationManager *notif
     handleNotification(notificationManager, systemTask, 4);
     return 0;
   }*/
+  if (data[5] != 0x59 || data[6] != 0x00) {
+    handleNotification(notificationManager, systemTask, 3);
+    return 0; // seems unrelated
+  }
   handleNotification(notificationManager, systemTask, 5);
 
   /* uint32_t notifId = (data[pos + 2] << 24) | (data[pos + 3] << 16) | (data[pos + 4] << 8) | data[pos + 5];
