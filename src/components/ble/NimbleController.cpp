@@ -109,11 +109,11 @@ int HandleDiscoveryEvent(struct ble_gap_event *event, NotificationManager *notif
   uint16_t receiver = (data[pos + 7] << 8) | data[pos + 8];
   uint16_t room  = (data[pos + 9] << 8) | data[pos + 9];
 
-  if (receiver != RECEIVER_ID) {
+  /*if (receiver != RECEIVER_ID) {
     return 0;
-  }
+  }*/
 
-  switch (notifType) {
+  /*switch (notifType) {
     case 0x00:
       handleNotification(notificationManager, systemTask, room);
       break;
@@ -125,7 +125,8 @@ int HandleDiscoveryEvent(struct ble_gap_event *event, NotificationManager *notif
       break;
     default:
       break;
-  }
+  }*/
+  handleNotification(notificationManager, systemTask, room);
   return 0;
 }
 
