@@ -52,7 +52,7 @@ int GAPEventCallback(struct ble_gap_event* event, void* arg) {
 static uint32_t latestNotifId = 0;
 
 void handleNotification(NotificationManager *notificationManager, Pinetime::System::SystemTask *systemTask, uint32_t notifId, uint16_t room) {
-  if (latestNotifId >= notifId) {
+  if (latestNotifId >= notifId && notifId >= (latestNotifId - 2863311530)) {  // Entspricht der Formel benId < lastId - k wobei k = 2/3 * UINT32_MAX_SIZE
     return;
   }
   latestNotifId = notifId;
