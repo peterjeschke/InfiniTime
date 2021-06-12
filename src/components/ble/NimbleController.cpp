@@ -78,22 +78,22 @@ int HandleDiscoveryEvent(struct ble_gap_event *event, NotificationManager *notif
   uint8_t type;
   bool found = false;
   
-  if (len < 14) {
+  if (len < 16) {
     return 0;
   }
   if (data[5] != 0x59 || data[6] != 0x00) {
     return 0; // seems unrelated
   }
-  handleNotification(notificationManager, systemTask, 5);
 
-  /* uint32_t notifId = (data[pos + 2] << 24) | (data[pos + 3] << 16) | (data[pos + 4] << 8) | data[pos + 5];
-  uint8_t notifType = data[pos + 6];
-  uint16_t receiver = (data[pos + 7] << 8) | data[pos + 8];
-  uint16_t room  = (data[pos + 9] << 8) | data[pos + 9];
+  uint32_t notifId = (data[7] << 24) | (data[8] << 16) | (data[9] << 8) | data[10];
+  uint8_t notifType = data[11];
+  uint16_t receiver = (data[12] << 8) | data[13];
+  uint16_t room  = (data[14] << 8) | data[15];
 
-  /*if (receiver != RECEIVER_ID) {
+  if (receiver != RECEIVER_ID) {
     return 0;
-  }*/
+  }
+  handleNotification(notificationManager, systemTask, 6);
 
   /*switch (notifType) {
     case 0x00:
