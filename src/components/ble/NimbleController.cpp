@@ -78,43 +78,10 @@ int HandleDiscoveryEvent(struct ble_gap_event *event, NotificationManager *notif
   uint8_t type;
   bool found = false;
   
-  if (len < 7) {
+  if (len < 14) {
     return 0;
   }
-  
-  /*while (pos < len) {
-    size = data[pos];
-    if (pos + size >= len || pos + 1 >= len) {
-      handleNotification(notificationManager, systemTask, 1);
-      // data seems too short
-      return 0;
-    }
-    if (size <= 0) {
-      // ????
-      handleNotification(notificationManager, systemTask, 0);
-      return 0;
-    }
-    type = data[pos + 1];
-    if (type != 0xFF) {
-      pos += size + 1;
-      continue;
-    }
-    if (size < 5) {
-      handleNotification(notificationManager, systemTask, 2);
-      return 0; // message seems too small
-    }
-    if (data[pos + 2] != 0x59 || data[pos + 3] != 0x00) {
-      handleNotification(notificationManager, systemTask, 3);
-      return 0; // seems unrelated
-    }
-    found = true;
-  }
-  if (!found) {
-    handleNotification(notificationManager, systemTask, 4);
-    return 0;
-  }*/
   if (data[5] != 0x59 || data[6] != 0x00) {
-    handleNotification(notificationManager, systemTask, 3);
     return 0; // seems unrelated
   }
   handleNotification(notificationManager, systemTask, 5);
