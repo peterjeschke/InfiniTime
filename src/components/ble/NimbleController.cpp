@@ -65,7 +65,7 @@ void handleNotification(NotificationManager *notificationManager, Pinetime::Syst
   notif.category = Pinetime::Controllers::NotificationManager::Categories::HighProriotyAlert;
   notificationManager->Push(std::move(notif));
 
-  systemTask->PushMessage(Pinetime::System::SystemTask::Messages::OnNewNotification);
+  systemTask->PushMessage(Pinetime::System::Messages::OnNewNotification);
 }
 
 void handleAcknowledgementAck() {
