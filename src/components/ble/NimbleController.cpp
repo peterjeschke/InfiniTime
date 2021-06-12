@@ -61,6 +61,7 @@ void handleNotification(NotificationManager *notificationManager, Pinetime::Syst
   NotificationManager::Notification notif;
 
   strcpy(notif.message.data(), msg.c_str());
+  notif.size = 32 + std::strlen(std::to_string(room));
 
   notif.category = Pinetime::Controllers::NotificationManager::Categories::HighProriotyAlert;
   notificationManager->Push(std::move(notif));
