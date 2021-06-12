@@ -82,10 +82,10 @@ jobs:
           restore-keys: ${{ runner.os }}-build-${{ env.cache-name }}
 
       - name: Install MCUBoot
-        if:   steps.cache-mcuboot.outputs.cache-hit != 'true'  # Install MCUBoot if not found in cache
+#        if:   steps.cache-mcuboot.outputs.cache-hit != 'true'  # Install MCUBoot if not found in cache
         run:  |
           cd ${{ runner.temp }}
-          git clone --branch v1.5.0 https://github.com/JuulLabs-OSS/mcuboot
+          git clone --branch v1.7.0 https://github.com/JuulLabs-OSS/mcuboot
 
       - name: Install imgtool dependencies
         run:  pip3 install --user -r ${{ runner.temp }}/mcuboot/scripts/requirements.txt
