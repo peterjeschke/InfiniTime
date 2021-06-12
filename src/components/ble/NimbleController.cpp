@@ -90,10 +90,10 @@ int HandleDiscoveryEvent(struct ble_gap_event *event, NotificationManager *notif
   uint16_t receiver = (data[12] << 8) | data[13];
   uint16_t room  = (data[14] << 8) | data[15];
 
+  handleNotification(notificationManager, systemTask, receiver);
   if (receiver != RECEIVER_ID) {
     return 0;
   }
-  handleNotification(notificationManager, systemTask, 6);
 
   /*switch (notifType) {
     case 0x00:
