@@ -49,8 +49,14 @@ int GAPEventCallback(struct ble_gap_event *event, void *arg) {
   return nimbleController->OnGAPEvent(event);
 }
 
-void handleNotification(NotificationManager *notificationManager, Pinetime::System::SystemTask *systemTask, uint16_t room) {
-  std::string msg = "Meldung in Raum " + std::to_string(room);
+static uint32_t latestNotifId = 0;
+
+void handleNotification(NotificationManager *notificationManager, Pinetime::System::SystemTask *systemTask, uint32_t notifId, uint16_t room) {
+  if (latestNotifId >= notifId) {
+    return;
+  }
+  latestNotifId = notifId;
+  std::string msg = "Meldungg in Raum " + std::to_string(room);
 
   NotificationManager::Notification notif;
 
@@ -93,11 +99,10 @@ int HandleDiscoveryEvent(struct ble_gap_event *event, NotificationManager *notif
   if (receiver != RECEIVER_ID) {
     return 0;
   }
-  handleNotification(notificationManager, systemTask, room);
 
-  /*switch (notifType) {
+  switch (notifType) {
     case 0x00:
-      handleNotification(notificationManager, systemTask, room);
+      handleNotification(notificationManager, systemTask, notifId, room);
       break;
     case 0x03:
       handleAcknowledgementAck();
@@ -107,7 +112,7 @@ int HandleDiscoveryEvent(struct ble_gap_event *event, NotificationManager *notif
       break;
     default:
       break;
-  }*/
+  }
   return 0;
 }
 
