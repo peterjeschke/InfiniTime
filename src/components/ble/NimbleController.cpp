@@ -69,11 +69,11 @@ void handleNotification(NotificationManager *notificationManager, Pinetime::Syst
 }
 
 void handleAcknowledgementAck() {
-
+  // not supported yet
 }
 
 void handleDelete() {
-
+  // not supported yet
 }
 
 int HandleDiscoveryEvent(struct ble_gap_event *event, NotificationManager *notificationManager, Pinetime::System::SystemTask *systemTask) {
