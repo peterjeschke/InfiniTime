@@ -71,15 +71,15 @@ jobs:
           unzip nrf5_sdk.zip
           mv nRF5_SDK_15.3.0_59ac345 nrf5_sdk
 
-      - name: Check cache for MCUBoot
-        id:   cache-mcuboot
-        uses: actions/cache@v2
-        env:
-          cache-name: cache-mcuboot
-        with:
-          path: ${{ runner.temp }}/mcuboot
-          key:  ${{ runner.os }}-build-${{ env.cache-name }}
-          restore-keys: ${{ runner.os }}-build-${{ env.cache-name }}
+#      - name: Check cache for MCUBoot
+#        id:   cache-mcuboot
+#        uses: actions/cache@v2
+#        env:
+#          cache-name: cache-mcuboot
+#        with:
+#          path: ${{ runner.temp }}/mcuboot
+#          key:  ${{ runner.os }}-build-${{ env.cache-name }}
+#          restore-keys: ${{ runner.os }}-build-${{ env.cache-name }}
 
       - name: Install MCUBoot
 #        if:   steps.cache-mcuboot.outputs.cache-hit != 'true'  # Install MCUBoot if not found in cache
