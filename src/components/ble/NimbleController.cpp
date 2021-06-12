@@ -56,7 +56,7 @@ void handleNotification(NotificationManager *notificationManager, Pinetime::Syst
     return;
   }
   latestNotifId = notifId;
-  std::string msg = "WOTAN-Meldung!\0Meldung in Raum " + std::to_string(room);
+  std::string msg = "WOTAN-Meldung! Meldung in Raum " + std::to_string(room);
 
   NotificationManager::Notification notif;
 
